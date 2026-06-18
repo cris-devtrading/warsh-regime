@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Warsh Regime — QuantEdge</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+
+:root {
+  --bg:       #060608;
+  --surf:     #0c0d10;
+  --surf2:    #111318;
+  --border:   #1c1e24;
+  --muted:    #252830;
+  --text:     #9aa8bc;
+  --dim:      #3a4255;
+  --signal:   #ff2d55;
+  --signal2:  #ff6b35;
+  --green:    #00e599;
+  --yellow:   #ffd060;
+  --blue:     #4a9eff;
+  --white:    #e8edf5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── TICKER TAPE ── */
+.ticker-wrap {
+  background: var(--signal);
+  padding: 8px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+.ticker-inner {
+  display: inline-block;
+  animation: ticker 40s linear infinite;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff;
+}
+@keyframes ticker {
+  0%   { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
+}
+
+/* ── NAV ── */
+nav {
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--white);
+  text-transform: uppercase;
+}
+.nav-logo span { color: var(--signal); }
+.nav-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.live-dot {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Space Mono', monospace; font-size: 9px;
+  letter-spacing: 0.12em; color: var(--green); text-transform: uppercase;
+}
+.live-dot::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.refresh-nav {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  padding: 6px 14px; background: transparent;
+  border: 1px solid var(--border); border-radius: 4px;
+  color: var(--dim); cursor: pointer; transition: all 0.15s;
+  letter-spacing: 0.08em;
+}
+.refresh-nav:hover { border-color: var(--signal); color: var(--signal); }
+
+/* ── HERO ── */
+.hero {
+  padding: 64px 24px 48px;
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: start;
+}
+@media (max-width: 640px) { .hero { grid-template-columns: 1fr; padding: 40px 16px 32px; } }
+
+.hero-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--signal);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--signal);
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.05;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--signal);
+}
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 28px;
+}
+
+.hero-dispute {
+  background: var(--surf2);
+  border-left: 3px solid var(--signal);
+  padding: 14px 18px;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 28px;
+  max-width: 520px;
+}
+.dispute-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--signal);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.dispute-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-style: italic;
+  color: var(--white);
+  line-height: 1.5;
+}
+.dispute-source {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--dim);
+  margin-top: 6px;
+}
+
+/* HERO RIGHT — VERDICT */
+.verdict-box {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  min-width: 220px;
+  text-align: center;
+}
+.verdict-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.verdict-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--signal);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.verdict-sub {
+  font-size: 11px;
+  color: var(--dim);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.verdict-divider { height: 1px; background: var(--border); margin: 14px 0; }
+.verdict-stat { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.verdict-stat-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--dim); letter-spacing: 0.1em; }
+.verdict-stat-val { font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; }
+
+/* ── METRICS ROW ── */
+.metrics-section { max-width: 960px; margin: 0 auto; padding: 0 24px 32px; }
+@media (max-width: 640px) { .metrics-section { padding: 0 16px 24px; } }
+
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.metric-cell {
+  background: var(--surf);
+  padding: 18px 20px;
+  transition: background 0.15s;
+}
+.metric-cell:hover { background: var(--surf2); }
+.mc-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.mc-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.mc-val.red    { color: var(--signal); }
+.mc-val.green  { color: var(--green); }
+.mc-val.yellow { color: var(--yellow); }
+.mc-val.blue   { color: var(--blue); }
+.mc-val.white  { color: var(--white); }
+.mc-change { font-family: 'Space Mono', monospace; font-size: 11px; }
+.mc-change.up   { color: var(--green); }
+.mc-change.down { color: var(--signal); }
+.mc-change.flat { color: var(--dim); }
+.mc-sub { font-size: 11px; color: var(--dim); margin-top: 4px; }
+
+/* ── WARSH SECTION ── */
+.warsh-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 640px) { .warsh-section { grid-template-columns: 1fr; padding: 0 16px 24px; } }
+
+.warsh-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+.warsh-card.featured {
+  border-color: rgba(255,45,85,0.3);
+  background: rgba(255,45,85,0.04);
+  grid-column: span 2;
+}
+@media (max-width: 640px) { .warsh-card.featured { grid-column: span 1; } }
+
+.wc-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--signal);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.wc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.wc-body { font-size: 13px; color: var(--text); line-height: 1.7; }
+.wc-body strong { color: var(--white); }
+
+.wc-stats { display: flex; gap: 20px; margin-top: 14px; flex-wrap: wrap; }
+.wc-stat { display: flex; flex-direction: column; gap: 3px; }
+.wc-stat-val { font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; }
+.wc-stat-label { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; }
+
+/* ── FOMC TIMELINE ── */
+.timeline-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+}
+@media (max-width: 640px) { .timeline-section { padding: 0 16px 24px; } }
+
+.section-header {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-header::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.timeline {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.tl-item {
+  flex: 1;
+  min-width: 120px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-right: none;
+  background: var(--surf);
+  position: relative;
+  transition: background 0.15s;
+}
+.tl-item:first-child { border-radius: 6px 0 0 6px; }
+.tl-item:last-child  { border-right: 1px solid var(--border); border-radius: 0 6px 6px 0; }
+.tl-item.today { background: rgba(255,45,85,0.06); border-color: rgba(255,45,85,0.4); }
+.tl-item.past  { opacity: 0.5; }
+.tl-date { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--dim); margin-bottom: 4px; }
+.tl-item.today .tl-date { color: var(--signal); }
+.tl-label { font-size: 12px; font-weight: 500; color: var(--white); margin-bottom: 4px; }
+.tl-note { font-size: 11px; color: var(--dim); line-height: 1.4; }
+.tl-today-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  background: var(--signal);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* ── AI ANALYSIS ── */
+.ai-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+}
+@media (max-width: 640px) { .ai-section { padding: 0 16px 24px; } }
+
+.ai-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ai-card-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ai-card-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+.ai-model-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 3px 9px;
+  background: rgba(74,158,255,0.1);
+  border: 1px solid rgba(74,158,255,0.25);
+  color: var(--blue);
+  border-radius: 3px;
+}
+.ai-card-body {
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text);
+  min-height: 100px;
+}
+.ai-card-body.loading { color: var(--dim); font-style: italic; }
+
+/* ── FOOTER ── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 24px;
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-brand {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--dim);
+}
+.footer-brand span { color: var(--signal); }
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+.footer-link {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.15s;
+}
+.footer-link:hover { color: var(--signal); }
+.footer-disclaimer {
+  font-size: 10px;
+  color: var(--dim);
+  width: 100%;
+  line-height: 1.5;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  display: inline-block; width: 12px; height: 12px;
+  border: 2px solid var(--border); border-top-color: var(--blue);
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+  vertical-align: middle; margin-right: 6px;
+}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    WARSH ELIMINATES FED FORWARD GUIDANCE · FIRST TIME SINCE 2003 · FOMC JUNE 17 2026 · RATES HOLD AT 3.50–3.75% · DOT PLOT: 9/18 MEMBERS SEE HIKE BY EOY · NASDAQ −1.34% · SPY −1.21% · DXY 99.54 · VIX 16.41 · ARGENTINA EMBI+ 435 BPS · WORLD BANK $2B GUARANTEE APPROVED · GGAL ADR +2.04% · SPACEX SPCX IPO LIVE · OPENAI S-1 FILED · QUANTEDGE SOLUTIONS · BUENOS AIRES / GLOBAL
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    WARSH ELIMINATES FED FORWARD GUIDANCE · FIRST TIME SINCE 2003 · FOMC JUNE 17 2026 · RATES HOLD AT 3.50–3.75% · DOT PLOT: 9/18 MEMBERS SEE HIKE BY EOY · NASDAQ −1.34% · SPY −1.21% · DXY 99.54 · VIX 16.41 · ARGENTINA EMBI+ 435 BPS · WORLD BANK $2B GUARANTEE APPROVED · GGAL ADR +2.04% · SPACEX SPCX IPO LIVE · OPENAI S-1 FILED · QUANTEDGE SOLUTIONS · BUENOS AIRES / GLOBAL
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div>
+    <div class="nav-logo">Quant<span>Edge</span></div>
+    <div class="nav-tag">Quantitative Finance · Buenos Aires / Global</div>
+  </div>
+  <div class="nav-right">
+    <div class="live-dot">Live</div>
+    <button class="refresh-nav" onclick="runAll()">⟳ Refresh</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow">Fed · June 17, 2026</div>
+    <h1 class="hero-title">The<br><em>Warsh</em><br>Regime</h1>
+    <p class="hero-sub">Kevin Warsh's first FOMC decision rewrote the rules. No forward guidance. No anchoring. The market is flying blind — and most analysts haven't figured it out yet.</p>
+
+    <div class="hero-dispute">
+      <div class="dispute-label">The sentence in dispute</div>
+      <div class="dispute-quote">"The Committee does not consider it appropriate to adjust the target range until it has gained greater confidence that inflation is moving sustainably toward 2 percent."</div>
+      <div class="dispute-source">— Removed from FOMC statement · June 17, 2026 · 130 words total vs 300+ under Powell</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-label">Regime Assessment</div>
+    <div class="verdict-val">HAWKISH<br>AMBIGUITY</div>
+    <div class="verdict-sub">Rates held. Guidance removed. Uncertainty priced in.</div>
+    <div class="verdict-divider"></div>
+    <div class="verdict-stat">
+      <span class="verdict-stat-label">Fed Funds</span>
+      <span class="verdict-stat-val" style="color:var(--yellow)">3.50–3.75%</span>
+    </div>
+    <div class="verdict-stat">
+      <span class="verdict-stat-label">Dot Plot EOY</span>
+      <span class="verdict-stat-val" style="color:var(--signal)">3.75–4.00%</span>
+    </div>
+    <div class="verdict-stat">
+      <span class="verdict-stat-label">Vote</span>
+      <span class="verdict-stat-val" style="color:var(--green)">12–0</span>
+    </div>
+    <div class="verdict-stat">
+      <span class="verdict-stat-label">Stmt. words</span>
+      <span class="verdict-stat-val" style="color:var(--signal)">130</span>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section class="metrics-section">
+  <div class="metrics-row">
+    <div class="metric-cell">
+      <div class="mc-label">VIX</div>
+      <div class="mc-val yellow">16.41</div>
+      <div class="mc-change up">+1.30%</div>
+      <div class="mc-sub">Fear rising, still low</div>
+    </div>
+    <div class="metric-cell">
+      <div class="mc-label">DXY</div>
+      <div class="mc-val white">99.54</div>
+      <div class="mc-change flat">0.00%</div>
+      <div class="mc-sub">Dollar flat post-FOMC</div>
+    </div>
+    <div class="metric-cell">
+      <div class="mc-label">NASDAQ / QQQ</div>
+      <div class="mc-val red">−1.34%</div>
+      <div class="mc-change down">Market reaction</div>
+      <div class="mc-sub">Hawkish read confirmed</div>
+    </div>
+    <div class="metric-cell">
+      <div class="mc-label">S&P 500 / SPY</div>
+      <div class="mc-val red">−1.21%</div>
+      <div class="mc-change down">Broad selloff</div>
+      <div class="mc-sub">Risk-off session</div>
+    </div>
+    <div class="metric-cell">
+      <div class="mc-label">10Y Treasury</div>
+      <div class="mc-val yellow">~4.45%</div>
+      <div class="mc-change up">Yield rising</div>
+      <div class="mc-sub">Bond market doubts cuts</div>
+    </div>
+    <div class="metric-cell">
+      <div class="mc-label">Argentina EMBI+</div>
+      <div class="mc-val yellow">435 bps</div>
+      <div class="mc-change down">+5 vs yesterday</div>
+      <div class="mc-sub">8-year low zone</div>
+    </div>
+  </div>
+</section>
+
+<!-- WARSH ANALYSIS -->
+<section class="warsh-section">
+  <div class="warsh-card featured">
+    <div class="wc-eyebrow">What Warsh actually did</div>
+    <div class="wc-title">Killing Forward Guidance Is Not a Neutral Act</div>
+    <div class="wc-body">
+      Forward guidance was the Fed's most powerful tool since 2008 — the ability to move markets without touching rates. By removing it, Warsh <strong>transferred uncertainty back to the market</strong>. This is deliberate. His academic work has argued for years that guidance creates moral hazard and distorts risk pricing.<br><br>
+      The implication: every asset class must now be priced on <strong>fundamentals alone</strong>, without the Fed backstop anchor. That's structurally bearish for high-multiple growth assets (AI stocks, speculative tech) and mixed for emerging markets — higher uncertainty premium, but also higher expected returns for those who navigate it correctly.
+    </div>
+    <div class="wc-stats">
+      <div class="wc-stat">
+        <div class="wc-stat-val" style="color:var(--signal)">9/18</div>
+        <div class="wc-stat-label">members see hike</div>
+      </div>
+      <div class="wc-stat">
+        <div class="wc-stat-val" style="color:var(--yellow)">130</div>
+        <div class="wc-stat-label">words in stmt</div>
+      </div>
+      <div class="wc-stat">
+        <div class="wc-stat-val" style="color:var(--green)">12–0</div>
+        <div class="wc-stat-label">unanimous vote</div>
+      </div>
+      <div class="wc-stat">
+        <div class="wc-stat-val" style="color:var(--blue)">2003</div>
+        <div class="wc-stat-label">last no-guidance FOMC</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warsh-card">
+    <div class="wc-eyebrow">Bull case</div>
+    <div class="wc-title">Why This Could Be Positive</div>
+    <div class="wc-body">
+      A Fed that doesn't pre-commit can <strong>cut faster</strong> when data deteriorates. If CRE defaults accelerate or unemployment spikes, Warsh can pivot aggressively without losing credibility — because he never promised anything. Optionality is a two-way street.
+    </div>
+  </div>
+
+  <div class="warsh-card">
+    <div class="wc-eyebrow">Bear case</div>
+    <div class="wc-title">Why This Is Dangerous</div>
+    <div class="wc-body">
+      Markets were priced for <strong>2 cuts in H2 2026</strong>. That anchor is now gone. With 9/18 members seeing a hike and $875B in CRE debt maturing this year, the probability distribution of outcomes just got <strong>much wider in both directions</strong>.
+    </div>
+  </div>
+</section>
+
+<!-- FOMC TIMELINE -->
+<section class="timeline-section">
+  <div class="section-header">FOMC Calendar 2026</div>
+  <div class="timeline">
+    <div class="tl-item past">
+      <div class="tl-date">Jan 29</div>
+      <div class="tl-label">Hold</div>
+      <div class="tl-note">Powell last meeting</div>
+    </div>
+    <div class="tl-item past">
+      <div class="tl-date">Mar 19</div>
+      <div class="tl-label">Hold</div>
+      <div class="tl-note">Warsh confirmed</div>
+    </div>
+    <div class="tl-item past">
+      <div class="tl-date">May 7</div>
+      <div class="tl-label">Hold</div>
+      <div class="tl-note">Warsh sworn in May 22</div>
+    </div>
+    <div class="tl-item today">
+      <div class="tl-today-badge">Today</div>
+      <div class="tl-date">Jun 17</div>
+      <div class="tl-label">Hold · No Guidance</div>
+      <div class="tl-note">Guidance removed. Dot plot hawkish.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Jul 30</div>
+      <div class="tl-label">Unknown</div>
+      <div class="tl-note">No anchor. Watch CPI.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Sep 17</div>
+      <div class="tl-label">Unknown</div>
+      <div class="tl-note">Cut or hike possible</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Nov 5</div>
+      <div class="tl-label">Unknown</div>
+      <div class="tl-note">Post-election context</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Dec 17</div>
+      <div class="tl-label">Unknown</div>
+      <div class="tl-note">Year-end positioning</div>
+    </div>
+  </div>
+</section>
+
+<!-- AI ANALYSIS -->
+<section class="ai-section">
+  <div class="section-header">Real-time AI analysis</div>
+  <div class="ai-card">
+    <div class="ai-card-header">
+      <span class="ai-card-title">QuantEdge macro intelligence · Warsh regime context</span>
+      <span class="ai-model-badge">Claude Sonnet · Live</span>
+    </div>
+    <div class="ai-card-body loading" id="ai-body">
+      <span class="spinner"></span> Generating analysis...
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid var(--border); margin-top:16px;">
+  <div class="site-footer">
+    <div class="footer-brand">Quant<span>Edge</span> Solutions · Buenos Aires · Global</div>
+    <div class="footer-links">
+      <a href="https://quantedge-financial-ai.vercel.app" class="footer-link" target="_blank">Financial AI</a>
+      <a href="https://geopolitical-analyzer.vercel.app" class="footer-link" target="_blank">Geo Analyzer</a>
+      <a href="https://nyse-blackswan.vercel.app" class="footer-link" target="_blank">Black Swan</a>
+      <a href="mailto:quantedgelatam@gmail.com" class="footer-link">Contact</a>
+    </div>
+    <div class="footer-disclaimer">
+      This dashboard is for informational purposes only and does not constitute financial advice. Market data reflects conditions as of June 17, 2026. QuantEdge Solutions · quantedgelatam@gmail.com
+    </div>
+  </div>
+</footer>
+
+<script>
+async function fetchAI() {
+  const prompt = `You are a senior macro strategist at QuantEdge Solutions. Write a sharp, 3-paragraph analysis (in English) of the following situation for a sophisticated international finance audience:
+
+Today, June 17 2026, Kevin Warsh held his first FOMC meeting as Fed Chair. Key facts:
+- Rates held at 3.50-3.75% (unanimous 12-0 vote)
+- Forward guidance completely removed — statement reduced to 130 words vs 300+ under Powell
+- Dot plot: 9 of 18 members now see at least one rate HIKE before end of 2026
+- Last time the Fed operated without forward guidance: 2003
+- Market reaction: Nasdaq -1.34%, SPY -1.21%, VIX +1.30% to 16.41
+- Macro context: $875B in CRE debt maturing in 2026, SpaceX/OpenAI/Anthropic IPO pipeline worth ~$3T
+
+Paragraph 1: What Warsh actually did and why it matters structurally (not just tactically).
+Paragraph 2: The two-sided risk this creates for asset allocators — especially EM and AI-heavy portfolios.
+Paragraph 3: The specific question every trader must now answer before their next position.
+
+Be direct, opinionated, and precise. No hedging. No disclaimers. Write like someone who has actual skin in the game.`;
+
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    return data.text ?? 'Analysis unavailable.';
+  } catch(e) {
+    return 'Error connecting to analysis engine.';
+  }
+}
+
+async function runAll() {
+  const aiEl = document.getElementById('ai-body');
+  aiEl.className = 'ai-card-body loading';
+  aiEl.innerHTML = '<span class="spinner"></span> Generating analysis...';
+
+  const text = await fetchAI();
+  aiEl.className = 'ai-card-body';
+
+  // Render párrafos
+  const paras = text.split('\n\n').filter(p => p.trim());
+  aiEl.innerHTML = paras.map(p => `<p style="margin-bottom:14px">${p}</p>`).join('');
+}
+
+runAll();
+</script>
+
+</body>
+</html>

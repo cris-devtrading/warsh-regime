@@ -1,14 +1,8 @@
-// api/analyze.js — Vercel Serverless Function
-// Proxy seguro para Anthropic API
-// La ANTHROPIC_API_KEY vive en Vercel env variables, nunca en el frontend
-
 export default async function handler(req, res) {
-  // Solo POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // CORS — permite tu dominio de Vercel
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -24,7 +18,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,  // ← env variable de Vercel
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -44,6 +38,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ text });
 
   } catch (error) {
-    return res.status(500).json({ error: 'Failed to fetch analysis' });
+    return res.status(500).json({ error: error.message });
   }
 }
